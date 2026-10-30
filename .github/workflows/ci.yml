@@ -1,0 +1,22 @@
+name: Algorithm checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python: ['3.11', '3.12']
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '${{ matrix.python }}'
+      - name: Business invariants and SQLite concurrency
+        run: python -m unittest -v
+      - name: End-to-end synthetic demonstration
+        run: python engine.py
